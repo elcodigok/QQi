@@ -39,7 +39,8 @@ class Puesto(sql.SQLObject):
 	mac = sql.StringCol(length=17)
 	nombre = sql.StringCol(alternateID=True,length=15)
 	usuario = sql.StringCol(length=15)
-	tipo = sql.IntCol()
+	#tipo = sql.IntCol()
+	tipo = sql.EnumCol(enumValues=('proxy', 'control', 'port', 'no'))
 	politica = sql.BoolCol()
 	grupos = sql.RelatedJoin('Grupo')
 	direcciones = sql.RelatedJoin('Direccion')
@@ -132,6 +133,11 @@ def menu_principal():
 				workstationQuery = Puesto.select()
 				workstationList = works.WorkstationAdmin(principal)
 				listOption = workstationList.showList(workstationQuery)
+			elif (workstationOption == 1):
+				workstationList = works.WorkstationAdmin(principal)
+				#options = ['nombre'.capitalize(), 'usuario'.capitalize()]
+				workstationAdd = workstationList.addWorkstation('Add Worwstation', 'New Workstation', principal, table=Puesto)
+				#print workstationAdd
 		elif opcion == 1:
 			userMenu = menu.Menu(gettext.gettext('Users Admin'),
 					 columnas -40, lineas -24,
