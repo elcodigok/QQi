@@ -120,24 +120,11 @@ def menu_principal():
 					titulo='QQi 0.1', screen=principal, posicion=0) 
 		opcion = firstMenu.showMenu()
 		if opcion == 0:
-			workstationMenu = menu.Menu(gettext.gettext('Workstation Admin'),
-					 columnas -40, lineas -24,
-					 opciones=(
-						gettext.gettext('List Workstation'),
-						gettext.gettext('Add Workstation'),
-						gettext.gettext('Remove Workstation'),
-						gettext.gettext('Exit'),),
-					titulo="Administration Workstations", screen=principal, posicion=0)
-			workstationOption = workstationMenu.showMenu()
-			if (workstationOption == 0):
 				workstationQuery = Puesto.select()
 				workstationList = works.WorkstationAdmin(principal)
 				listOption = workstationList.showList(workstationQuery)
-			elif (workstationOption == 1):
-				workstationList = works.WorkstationAdmin(principal)
-				#options = ['nombre'.capitalize(), 'usuario'.capitalize()]
-				workstationAdd = workstationList.addWorkstation('Add Worwstation', 'New Workstation', principal, table=Puesto)
-				#print workstationAdd
+				#workstationList = works.WorkstationAdmin(principal)
+				#workstationAdd = workstationList.addWorkstation('Add Worwstation', 'New Workstation', principal, table=Puesto)
 		elif opcion == 1:
 			userMenu = menu.Menu(gettext.gettext('Users Admin'),
 					 columnas -40, lineas -24,

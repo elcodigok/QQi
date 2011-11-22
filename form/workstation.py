@@ -12,10 +12,14 @@ class WorkstationAdmin:
 	
 	def showList(self, query):
 		self.query = query
-		self.listElement = Listbox(height=12, width=50, returnExit=1)
-		self.buttons = ButtonBar(self.screen, (("View", "view"), ("Delete", "delete"), ("Exit", "exit")))
+		self.listElement = Listbox(height=15, width=77, returnExit=1)
+		self.buttons = ButtonBar(self.screen, ((gettext.gettext("Add"), "add"), 
+												(gettext.gettext("Modify"), "modify"), 
+												(gettext.gettext("Delete"), "delete"), 
+												(gettext.gettext("Return"), "return")))
 		for record in self.query:
-			self.listElement.append(record.usuario + ", " + record.nombre + ", " + record.ip, record)
+			item = "%-20s %-15s %6s %-15s %-5s" % (record.usuario, record.nombre, record.ip, record.tipo, record.politica)
+			self.listElement.append(item, record)
 		self.grid = GridForm(self.screen, gettext.gettext('Workstation List'), 1, 2)
 		self.grid.add(self.listElement, 0, 0)
 		self.grid.add(self.buttons, 0, 1, growx=1)
