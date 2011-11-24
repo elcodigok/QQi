@@ -6,10 +6,11 @@ import sqlobject as sql
 
 
 class WorkstationAdmin:
+
 	def __init__(self, screen):
 		self.screen = screen
 		self.cadena = ""
-	
+
 	def showList(self, query):
 		self.query = query
 		self.listElement = Listbox(height=15, width=77, returnExit=1)
@@ -34,7 +35,7 @@ class WorkstationAdmin:
 		entryWidth = 20, buttons = [ 'Ok', 'Cancel' ], help = None):
 		"""
 		#self.bb = ButtonBar(screen, buttons);
-		self.bb = ButtonBar(screen, (("Save", "save"), ("Cancel", "cancel")));
+		self.bb = ButtonBar(screen, ((gettext.gettext("Save"), "save"), (gettext.gettext("Cancel"), "cancel")));
 		t = TextboxReflowed(width, text)
 		count = len(self.table.sqlmeta.columnList)
 		sg = Grid(2, count)
@@ -53,9 +54,9 @@ class WorkstationAdmin:
 					e = Entry(entryWidth)
 			elif type(n) == sql.SOBoolCol:
 				if n.default == True:
-					e = Checkbox("Enabled", isOn = 1)
+					e = Checkbox(gettext.gettext("Enabled"), isOn = 1)
 				else:
-					e = Checkbox("Enabled", isOn = 0)
+					e = Checkbox(gettext.gettext("Enabled"), isOn = 0)
 			elif type(n) == sql.SOEnumCol:
 				indice = 1
 				contador = len(n.enumValues)
@@ -71,7 +72,7 @@ class WorkstationAdmin:
 				self.cadena += ")"
 				#print self.cadena
 				#e = RadioBar(self.screen, '%s') % (self.cadena)
-				e = RadioBar(self.screen, (("Proyx", "proxy", 1), ("Control", "control", 0), ("Port", "port", 0), ("No", "no", 0)))
+				e = RadioBar(self.screen, ((gettext.gettext("Proyx"), "proxy", 1), (gettext.gettext("Control"), "control", 0), (gettext.gettext("Port"), "port", 0), (gettext.gettext("No"), "no", 0)))
 			else:
 				if (edit == True):
 					e = Entry(entryWidth, text=record._SO_getValue(n.name))
