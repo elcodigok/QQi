@@ -24,10 +24,11 @@ class WorkstationAdmin:
 		self.grid.add(self.listElement, 0, 0)
 		self.grid.add(self.buttons, 0, 1, growx=1)
 		rta = self.grid.runOnce()
-		return rta
+		return (self.buttons.buttonPressed(rta), self.listElement.current())
 	
 	def ntEntryWindow(self, screen, title, text, prompts, allowCancel = 1, width = 40, 
-		entryWidth = 20, buttons = [ 'Ok', 'Cancel' ], help = None, table = None):
+		entryWidth = 20, buttons = [ 'Ok', 'Cancel' ], help = None, table = None, record = None,
+		edit = None):
 		"""
 		EntryWindow(screen, title, text, prompts, allowCancel = 1, width = 40,
 		entryWidth = 20, buttons = [ 'Ok', 'Cancel' ], help = None):
@@ -40,17 +41,22 @@ class WorkstationAdmin:
 		count = 0
 		entryList = []
 		for n in self.table.sqlmeta.columnList:
-			if type(n) == sql.SOStringCol:	
-				e = Entry(entryWidth)
+			if type(n) == sql.SOStringCol:
+				if (edit == True):
+					e = Entry(entryWidth, text=record._SO_getValue(n.name))
+				else:
+					e = Entry(entryWidth)
 			elif type(n) == sql.SOIntCol:
-				e = Entry(entryWidth)
+				if (edit == True):
+					e = Entry(entryWidth, text=record._SO_getValue(n.name))
+				else:
+					e = Entry(entryWidth)
 			elif type(n) == sql.SOBoolCol:
 				if n.default == True:
 					e = Checkbox("Enabled", isOn = 1)
 				else:
 					e = Checkbox("Enabled", isOn = 0)
 			elif type(n) == sql.SOEnumCol:
-				#e = RadioBar(self.screen,(("Proxy   ", 1, 0), ("Control ", 2, 0), ("Inactivo",0,1)))
 				indice = 1
 				contador = len(n.enumValues)
 				self.cadena = "("
@@ -67,7 +73,10 @@ class WorkstationAdmin:
 				#e = RadioBar(self.screen, '%s') % (self.cadena)
 				e = RadioBar(self.screen, (("Proyx", "proxy", 1), ("Control", "control", 0), ("Port", "port", 0), ("No", "no", 0)))
 			else:
-				e = Entry(entryWidth)
+				if (edit == True):
+					e = Entry(entryWidth, text=record._SO_getValue(n.name))
+				else:
+					e = Entry(entryWidth)
 			sg.setField(Label(n.name.capitalize() + ":"), 0, count, padding = (0, 0, 1, 1), anchorLeft = 1)
 			sg.setField(e, 1, count, anchorLeft = 1)
 			count += 1
@@ -103,4 +112,35 @@ class WorkstationAdmin:
 				dict_campos[campos[x]] = rta[1][x]
 			registro=self.table(**dict_campos)
 		return rta
-
+	
+	def editWorkstation(self, title, text, screen, table, registro):
+		self.screen = screen
+		self.title = title
+		self.text = text
+		self.table = table
+		self.registro = registro
+		columnas = [col.name.capitalize() for col in self.table.sqlmeta.columnList]
+		rta = self.ntEntryWindow(self.screen, self.title, self.text, columnas, self.table, record=self.registro, edit=True)
+		if rta[0] == "save":
+			campos = [col.name for col in self.table.sqlmeta.columnList]
+			dict_campos={}
+			for x in range(len(campos)):
+				dict_campos[campos[x]] = rta[1][x]
+			#rregistro=self.table.set(dict_campos)
+			self.registro.set(**dict_campos)
+			#print dict_campos
+		#return rta
+		#print dir(self.registro)
+		#print self.registro._SO_getValue("ip")
+	
+	def deleteWorkstation(self, screen, table, registro):
+		self.screen = screen
+		self.table = table
+		self.registro = registro
+		confirmation = ButtonChoiceWindow(self.screen, 
+						gettext.gettext('Confirm'),
+						gettext.gettext('are you sure to remove'),
+						[gettext.gettext('Ok'),
+						gettext.gettext('Cancel')], 60)
+		if (confirmation == 'ok'):
+			self.table.delete(self.registro.id)

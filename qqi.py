@@ -123,8 +123,19 @@ def menu_principal():
 				workstationQuery = Puesto.select()
 				workstationList = works.WorkstationAdmin(principal)
 				listOption = workstationList.showList(workstationQuery)
-				#workstationList = works.WorkstationAdmin(principal)
-				#workstationAdd = workstationList.addWorkstation('Add Worwstation', 'New Workstation', principal, table=Puesto)
+				if (listOption[0] == "add"):
+					workstationList = works.WorkstationAdmin(principal)
+					workstationAdd = workstationList.addWorkstation('Add Worwstation', 'New Workstation', principal, table=Puesto)
+				elif (listOption[0] == "modify"):
+					record = listOption[1]
+					workstationList = works.WorkstationAdmin(principal)
+					workstationModify = workstationList.editWorkstation('Modify Workstation', 'Edit Workstation', principal, Puesto, record)
+				elif (listOption[0] == "delete"):
+					record = listOption[1]
+					workstationList = works.WorkstationAdmin(principal)
+					workstationDelete = workstationList.deleteWorkstation(principal, Puesto, record)
+				else:
+					print "hola"
 		elif opcion == 1:
 			userMenu = menu.Menu(gettext.gettext('Users Admin'),
 					 columnas -40, lineas -24,
@@ -170,15 +181,15 @@ def menu_principal():
 			config.configurar()
 		elif opcion == 6:
 			salida = os.system('tar cvfz /var/backups/qqi-0.1.tar.gz ' + 
-							'/usr/local/sbin/thaya.py ' + 
+							'/usr/local/sbin/qqi.py ' + 
 							'/usr/local/sbin/firewall.py ' + 
-							'/etc/init.d/thaya ' +
-							'/usr/share/locale/es/LC_MESSAGES/thaya.mo ' +
-							'/usr/local/etc/thaya/*')
+							'/etc/init.d/qqi ' +
+							'/usr/share/locale/es/LC_MESSAGES/qqi.mo ' +
+							'/usr/local/etc/qqi/*')
 		elif opcion == 7:
 			salida = os.system('/usr/local/sbin/firewall.py')
-			salida = os.system('/etc/init.d/freeradius restart')
-			salida = os.system('/etc/init.d/dnsmasq restart')
+			#salida = os.system('/etc/init.d/freeradius restart')
+			#salida = os.system('/etc/init.d/dnsmasq restart')
 		elif opcion == 8:
 			deshabilitar()
 		elif opcion == 9:
