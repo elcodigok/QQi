@@ -10,6 +10,7 @@ import form.configuration as conf
 import form.menu as menu
 import form.workstation as works
 import form.user as users
+import form.group as groups
 
 
 try:
@@ -140,7 +141,7 @@ def menu_principal():
 								Puesto,
 								record)
 			else:
-				print "hola"
+				print gettext.gettext("Invalid Options")
 		elif opcion == 1:
 			userQuery = Usuario.select()
 			userList = users.UserAdmin(principal)
@@ -168,15 +169,31 @@ def menu_principal():
 			else:
 				print gettext.gettext("Invalid Options")
 		elif opcion == 2:
-			groupMenu = menu.Menu(gettext.gettext('Groups Admin'),
-					columnas=(columnas - 40), lineas=(lineas - 24),
-					opciones=(
-						gettext.gettext('List Groups'),
-						gettext.gettext('Add Groups'),
-						gettext.gettext('Remove Groups'),
-						gettext.gettext('Exit'),),
-					titulo="Administration Groups", screen=principal, posicion=0)
-			groupOption = groupMenu.showMenu()
+			groupQuery = Grupo.select()
+			groupList = groups.GroupAdmin(principal)
+			listOption = groupList.showList(groupQuery)
+			if (listOption[0] == "add"):
+				groupList = groups.GroupAdmin(principal)
+				groupAdd = groupList.addGroup(
+								gettext.gettext('Add Group'),
+								gettext.gettext('New Group'),
+								principal, table=Grupo)
+			elif (listOption[0] == "modify"):
+				record = listOption[1]
+				groupList = groups.GroupAdmin(principal)
+				groupModify = groupList.editGroup(
+								gettext.gettext('Modify Groups'),
+								gettext.gettext('Edit Group'),
+								principal, Grupo, record)
+			elif (listOption[0] == "delete"):
+				record = listOption[1]
+				groupList = groups.GroupAdmin(principal)
+				groupDelete = groupList.deleteGroup(
+								principal,
+								Grupo,
+								record)
+			else:
+				print gettext.gettext("Invalid Options")
 		elif opcion == 3:
 			serviceMenu = menu.Menu(gettext.gettext('Services Admin'),
 					columnas=(columnas - 40), lineas=(lineas - 24),

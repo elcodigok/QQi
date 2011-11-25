@@ -19,11 +19,11 @@ class GroupAdmin:
 												(gettext.gettext("Return"), "return")))
 		if (self.query.count() > 0):
 			for record in self.query:
-				item = "%-20s %-15s %6s %-15s" % (record.nombre, record.nombrecompleto, record.activo, record.politica)
+				item = "%-20s %-15s %6s %-15s" % (record.nombre, record.descripcion, record.tipo, record.web)
 				self.listElement.append(item, record)
 		else:
 			self.listElement.append(gettext.gettext("There are no records"), 0)
-		self.grid = GridForm(self.screen, gettext.gettext('Users List'), 1, 2)
+		self.grid = GridForm(self.screen, gettext.gettext('Group List'), 1, 2)
 		self.grid.add(self.listElement, 0, 0)
 		self.grid.add(self.buttons, 0, 1, growx=1)
 		rta = self.grid.runOnce()
@@ -73,8 +73,8 @@ class GroupAdmin:
 					indice += 1
 				self.cadena += ")"
 				#print self.cadena
-				#e = RadioBar(self.screen, '%s') % (self.cadena)
-				e = RadioBar(self.screen, ((gettext.gettext("Proyx"), "proxy", 1), (gettext.gettext("Control"), "control", 0), (gettext.gettext("Port"), "port", 0), (gettext.gettext("No"), "no", 0)))
+				#e = RadioBar(self.screen, self.cadena)
+				#e = RadioBar(self.screen, ((gettext.gettext("Proyx"), "proxy", 1), (gettext.gettext("Control"), "control", 0), (gettext.gettext("Port"), "port", 0), (gettext.gettext("No"), "no", 0)))
 			else:
 				if (edit == True):
 					e = Entry(entryWidth, text=record._SO_getValue(n.name))
