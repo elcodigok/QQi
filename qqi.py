@@ -11,6 +11,7 @@ import form.menu as menu
 import form.workstation as works
 import form.user as users
 import form.group as groups
+import form.url as urls
 
 
 try:
@@ -107,8 +108,8 @@ def menu_principal():
 						gettext.gettext('Workstation admin'),
 						gettext.gettext('Users admin'),
 						gettext.gettext('Groups admin'),
-						gettext.gettext('Services admin'),
 						gettext.gettext('Domain admin'),
+						gettext.gettext('Services admin'),
 						gettext.gettext('Configuration'),
 						gettext.gettext('Create backup'),
 						gettext.gettext('Apply changes'),
@@ -195,15 +196,31 @@ def menu_principal():
 			else:
 				print gettext.gettext("Invalid Options")
 		elif opcion == 3:
-			serviceMenu = menu.Menu(gettext.gettext('Services Admin'),
-					columnas=(columnas - 40), lineas=(lineas - 24),
-					opciones=(
-						gettext.gettext('List Services'),
-						gettext.gettext('Add Services'),
-						gettext.gettext('Remove Services'),
-						gettext.gettext('Exit'),),
-					titulo="Administration Services", screen=principal, posicion=0)
-			serviceOption = serviceMenu.showMenu()
+			urlQuery = Direccion.select()
+			urlList = urls.UrlAdmin(principal)
+			listOption = urlList.showList(urlQuery)
+			if (listOption[0] == "add"):
+				urlList = urls.UrlAdmin(principal)
+				urlAdd = urlList.addUrl(
+								gettext.gettext('Add URL'),
+								gettext.gettext('New URL or Domain'),
+								principal, table=Direccion)
+			elif (listOption[0] == "modify"):
+				record = listOption[1]
+				urlList = urls.UrlAdmin(principal)
+				urlModify = urlList.editUrl(
+								gettext.gettext('Modify URL'),
+								gettext.gettext('Edit URL or Domain'),
+								principal, Direccion, record)
+			elif (listOption[0] == "delete"):
+				record = listOption[1]
+				urlList = urls.UrlAdmin(principal)
+				urlDelete = urlList.deleteUrl(
+								principal,
+								Direccion,
+								record)
+			else:
+				print gettext.gettext("Invalid Options")
 		elif opcion == 4:
 			domainMenu = menu.Menu(gettext.gettext('Domain Admin'),
 					columnas=(columnas - 40), lineas=(lineas - 24),
