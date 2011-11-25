@@ -4,8 +4,7 @@ import os
 import ConfigParser
 import sqlobject as sql
 
-
-class WorkstationAdmin:
+class UserAdmin:
 
 	def __init__(self, screen):
 		self.screen = screen
@@ -20,11 +19,11 @@ class WorkstationAdmin:
 												(gettext.gettext("Return"), "return")))
 		if (self.query.count() > 0):
 			for record in self.query:
-				item = "%-20s %-15s %6s %-15s %-5s" % (record.usuario, record.nombre, record.ip, record.tipo, record.politica)
+				item = "%-20s %-15s %6s %-15s" % (record.nombre, record.nombrecompleto, record.activo, record.politica)
 				self.listElement.append(item, record)
 		else:
 			self.listElement.append(gettext.gettext("There are no records"), 0)
-		self.grid = GridForm(self.screen, gettext.gettext('Workstation List'), 1, 2)
+		self.grid = GridForm(self.screen, gettext.gettext('Users List'), 1, 2)
 		self.grid.add(self.listElement, 0, 0)
 		self.grid.add(self.buttons, 0, 1, growx=1)
 		rta = self.grid.runOnce()
@@ -101,7 +100,7 @@ class WorkstationAdmin:
 			count = count + 1
 		return (self.bb.buttonPressed(result), tuple(entryValues))
 	
-	def addWorkstation(self, title, text, screen, table):
+	def addUser(self, title, text, screen, table):
 		self.screen = screen
 		self.title = title
 		self.text = text
@@ -117,7 +116,7 @@ class WorkstationAdmin:
 			registro=self.table(**dict_campos)
 		return rta
 	
-	def editWorkstation(self, title, text, screen, table, registro):
+	def editUser(self, title, text, screen, table, registro):
 		self.screen = screen
 		self.title = title
 		self.text = text
@@ -137,7 +136,7 @@ class WorkstationAdmin:
 		#print dir(self.registro)
 		#print self.registro._SO_getValue("ip")
 	
-	def deleteWorkstation(self, screen, table, registro):
+	def deleteUser(self, screen, table, registro):
 		self.screen = screen
 		self.table = table
 		self.registro = registro

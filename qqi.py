@@ -9,6 +9,7 @@ import ConfigParser
 import form.configuration as conf
 import form.menu as menu
 import form.workstation as works
+import form.user as users
 
 
 try:
@@ -115,41 +116,57 @@ def menu_principal():
 					titulo='QQi 0.1', screen=principal, posicion=0)
 		opcion = firstMenu.showMenu()
 		if opcion == 0:
-				workstationQuery = Puesto.select()
+			workstationQuery = Puesto.select()
+			workstationList = works.WorkstationAdmin(principal)
+			listOption = workstationList.showList(workstationQuery)
+			if (listOption[0] == "add"):
 				workstationList = works.WorkstationAdmin(principal)
-				listOption = workstationList.showList(workstationQuery)
-				if (listOption[0] == "add"):
-					workstationList = works.WorkstationAdmin(principal)
-					workstationAdd = workstationList.addWorkstation(
-									gettext.gettext('Add Worwstation'),
-									gettext.gettext('New Workstation'),
-									principal, table=Puesto)
-				elif (listOption[0] == "modify"):
-					record = listOption[1]
-					workstationList = works.WorkstationAdmin(principal)
-					workstationModify = workstationList.editWorkstation(
-									gettext.gettext('Modify Workstation'),
-									gettext.gettext('Edit Workstation'),
-									principal, Puesto, record)
-				elif (listOption[0] == "delete"):
-					record = listOption[1]
-					workstationList = works.WorkstationAdmin(principal)
-					workstationDelete = workstationList.deleteWorkstation(
-									principal,
-									Puesto,
-									record)
-				else:
-					print "hola"
+				workstationAdd = workstationList.addWorkstation(
+								gettext.gettext('Add Worwstation'),
+								gettext.gettext('New Workstation'),
+								principal, table=Puesto)
+			elif (listOption[0] == "modify"):
+				record = listOption[1]
+				workstationList = works.WorkstationAdmin(principal)
+				workstationModify = workstationList.editWorkstation(
+								gettext.gettext('Modify Workstation'),
+								gettext.gettext('Edit Workstation'),
+								principal, Puesto, record)
+			elif (listOption[0] == "delete"):
+				record = listOption[1]
+				workstationList = works.WorkstationAdmin(principal)
+				workstationDelete = workstationList.deleteWorkstation(
+								principal,
+								Puesto,
+								record)
+			else:
+				print "hola"
 		elif opcion == 1:
-			userMenu = menu.Menu(gettext.gettext('Users Admin'),
-					columnas=(columnas - 40), lineas=(lineas - 24),
-					opciones=(
-						gettext.gettext('List Users'),
-						gettext.gettext('Add Users'),
-						gettext.gettext('Remove Users'),
-						gettext.gettext('Exit'),),
-					titulo="Administration Users", screen=principal, posicion=0)
-			userOption = userMenu.showMenu()
+			userQuery = Usuario.select()
+			userList = users.UserAdmin(principal)
+			listOption = userList.showList(userQuery)
+			if (listOption[0] == "add"):
+				userList = users.UserAdmin(principal)
+				userAdd = userList.addUser(
+								gettext.gettext('Add User'),
+								gettext.gettext('New User'),
+								principal, table=Usuario)
+			elif (listOption[0] == "modify"):
+				record = listOption[1]
+				userList = users.UserAdmin(principal)
+				userModify = userList.editUser(
+								gettext.gettext('Modify Users'),
+								gettext.gettext('Edit User'),
+								principal, Usuario, record)
+			elif (listOption[0] == "delete"):
+				record = listOption[1]
+				userList = users.UserAdmin(principal)
+				userDelete = userList.deleteUser(
+								principal,
+								Usuario,
+								record)
+			else:
+				print gettext.gettext("Invalid Options")
 		elif opcion == 2:
 			groupMenu = menu.Menu(gettext.gettext('Groups Admin'),
 					columnas=(columnas - 40), lineas=(lineas - 24),
