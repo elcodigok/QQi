@@ -12,6 +12,7 @@ import form.workstation as works
 import form.user as users
 import form.group as groups
 import form.url as urls
+import form.service as services
 
 
 try:
@@ -222,15 +223,31 @@ def menu_principal():
 			else:
 				print gettext.gettext("Invalid Options")
 		elif opcion == 4:
-			domainMenu = menu.Menu(gettext.gettext('Domain Admin'),
-					columnas=(columnas - 40), lineas=(lineas - 24),
-					opciones=(
-						gettext.gettext('List Domain'),
-						gettext.gettext('Add Domain'),
-						gettext.gettext('Remove Domain'),
-						gettext.gettext('Exit'),),
-					titulo="Administration Domain", screen=principal, posicion=0)
-			domainOption = domainMenu.showMenu()
+			serviceQuery = Servicio.select()
+			serviceList = services.ServiceAdmin(principal)
+			listOption = serviceList.showList(serviceQuery)
+			if (listOption[0] == "add"):
+				serviceList = services.ServiceAdmin(principal)
+				serviceAdd = serviceList.addService(
+								gettext.gettext('Add Service'),
+								gettext.gettext('New Service'),
+								principal, table=Servicio)
+			elif (listOption[0] == "modify"):
+				record = listOption[1]
+				serviceList = services.ServiceAdmin(principal)
+				serviceModify = serviceList.editService(
+								gettext.gettext('Modify Service'),
+								gettext.gettext('Edit Service'),
+								principal, Servicio, record)
+			elif (listOption[0] == "delete"):
+				record = listOption[1]
+				serviceList = services.ServiceAdmin(principal)
+				serviceDelete = serviceList.deleteService(
+								principal,
+								Servicio,
+								record)
+			else:
+				print gettext.gettext("Invalid Options")
 		elif opcion == 5:
 			config = conf.Configuracion(principal,
 					'/home/dmaldonado/Proyectos/QQi/qqi.cnf')
