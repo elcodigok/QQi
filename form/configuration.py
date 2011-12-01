@@ -20,58 +20,58 @@ class Configuracion():
 		""" Funcion para modificacion de parametros de configuracion"""
 		config = ConfigParser.RawConfigParser()
 		config.read(self.archivo)
-		red_interna = config.get('Lan', 'red_interna')
-		red_externa = config.get('Lan', 'red_externa')
-		ip_interno = config.get('Lan', 'ip_interno')
-		ip_externo = config.get('Lan', 'ip_externo')
-		interface_lan = config.get('Lan', 'interface_lan')
-		interface_externa = config.get('Lan', 'interface_externa')
-		ip_administrador = config.get('Lan', 'ip_administrador')
-		total_subida = config.get('Bandwidht', 'total_subida')
-		total_bajada = config.get('Bandwidht', 'total_bajada')
+		internal_network = config.get('Lan', 'internal_network')
+		external_network = config.get('Lan', 'external_network')
+		internal_ip = config.get('Lan', 'internal_ip')
+		external_ip = config.get('Lan', 'external_ip')
+		iface_lan = config.get('Lan', 'iface_lan')
+		iface_wan = config.get('Lan', 'iface_wan')
+		admin_ip = config.get('Lan', 'admin_ip')
+		total_upload = config.get('Bandwidht', 'total_upload')
+		total_download = config.get('Bandwidht', 'total_download')
 		low_ceil = config.get('Bandwidht', 'low_ceil')
 		medium_ceil = config.get('Bandwidht', 'medium_ceil')
 		high_ceil = config.get('Bandwidht', 'high_ceil')
 		full_ceil = config.get('Bandwidht', 'full_ceil')
-		porcentaje_rate = config.get('Bandwidht', 'porcentaje_rate')
-		puertos_priorizados = config.get('Bandwidht', 'puertos_priorizados')
+		rate_percentage = config.get('Bandwidht', 'rate_percentage')
+		priorized_ports = config.get('Bandwidht', 'priorized_ports')
 		
 		(boton, valores) = EntryWindow(self.pantalla,
 			gettext.gettext("Configuration"), 
 			gettext.gettext("Input here the basic parameter for the system"),
-			[(gettext.gettext('Internal network:'), red_interna), 
-			(gettext.gettext('External network:'), red_externa), 
-			(gettext.gettext('Internal IP:'), ip_interno),
-			(gettext.gettext('External IP:'), ip_externo),
-			(gettext.gettext('Internal interface:'), interface_lan),
-			(gettext.gettext('External interface:'), interface_externa),
-			(gettext.gettext('Administrative IP:'), ip_administrador),
-			(gettext.gettext('Upload bandwidht:'), total_subida),
-			(gettext.gettext('Download bandwidht:'), total_bajada),
+			[(gettext.gettext('Internal network:'), internal_network), 
+			(gettext.gettext('External network:'), external_network), 
+			(gettext.gettext('Internal IP:'), internal_ip),
+			(gettext.gettext('External IP:'), external_ip),
+			(gettext.gettext('Internal interface:'), iface_lan),
+			(gettext.gettext('External interface:'), iface_wan),
+			(gettext.gettext('Administrative IP:'), admin_ip),
+			(gettext.gettext('Upload bandwidht:'), total_upload),
+			(gettext.gettext('Download bandwidht:'), total_download),
 			(gettext.gettext('Ceil for low class:'), low_ceil),
 			(gettext.gettext('Ceil for medium class:'), medium_ceil),
 			(gettext.gettext('Ceil for high class:'), high_ceil),
 			(gettext.gettext('Ceil for full class:'), full_ceil),
-			(gettext.gettext('Rate pecent guaranty:'), porcentaje_rate),
-			(gettext.gettext('Priorized ports:'), puertos_priorizados)])
+			(gettext.gettext('Rate pecent guaranty:'), rate_percentage),
+			(gettext.gettext('Priorized ports:'), priorized_ports)])
 		config = ConfigParser.RawConfigParser()
 		config.add_section('Lan')
-		config.set('Lan', 'red_interna', valores[0])
-		config.set('Lan', 'red_externa', valores[1])
-		config.set('Lan', 'ip_interno', valores[2])
-		config.set('Lan', 'ip_externo', valores[3])
-		config.set('Lan', 'interface_lan', valores[4])
-		config.set('Lan', 'interface_externa', valores[5])
-		config.set('Lan', 'ip_administrador', valores[6])
+		config.set('Lan', 'internal_network', valores[0])
+		config.set('Lan', 'external_network', valores[1])
+		config.set('Lan', 'internal_ip', valores[2])
+		config.set('Lan', 'external_ip', valores[3])
+		config.set('Lan', 'iface_lan', valores[4])
+		config.set('Lan', 'iface_wan', valores[5])
+		config.set('Lan', 'admin_ip', valores[6])
 		config.add_section('Bandwidht')
-		config.set('Bandwidht', 'total_subida', valores[7])
-		config.set('Bandwidht', 'total_bajada', valores[8])
+		config.set('Bandwidht', 'total_upload', valores[7])
+		config.set('Bandwidht', 'total_download', valores[8])
 		config.set('Bandwidht', 'low_ceil', valores[9])
 		config.set('Bandwidht', 'medium_ceil', valores[10])
 		config.set('Bandwidht', 'high_ceil', valores[11])
 		config.set('Bandwidht', 'full_ceil', valores[12])
-		config.set('Bandwidht', 'porcentaje_rate', valores[13])
-		config.set('Bandwidht', 'puertos_priorizados', valores[14])
+		config.set('Bandwidht', 'rate_percentage', valores[13])
+		config.set('Bandwidht', 'priorized_ports', valores[14])
 		if boton == 'ok':
 			configfile = open(self.archivo, 'wb')
 			config.write(configfile)
@@ -99,22 +99,22 @@ class Configuracion():
 			gettext.Catalog('Priorized ports:')])
 		config = ConfigParser.RawConfigParser()
 		config.add_section('Lan')
-		config.set('Lan', 'red_interna', valores[0])
-		config.set('Lan', 'red_externa', valores[1])
-		config.set('Lan', 'ip_interno', valores[2])
-		config.set('Lan', 'ip_externo', valores[3])
-		config.set('Lan', 'interface_lan', valores[4])
-		config.set('Lan', 'interface_externa', valores[5])
-		config.set('Lan', 'ip_administrador', valores[6])
+		config.set('Lan', 'internal_network', valores[0])
+		config.set('Lan', 'external_network', valores[1])
+		config.set('Lan', 'internal_ip', valores[2])
+		config.set('Lan', 'external_ip', valores[3])
+		config.set('Lan', 'iface_lan', valores[4])
+		config.set('Lan', 'iface_wan', valores[5])
+		config.set('Lan', 'admin_ip', valores[6])
 		config.add_section('Bandwidht')
-		config.set('Bandwidht', 'total_subida', valores[7])
-		config.set('Bandwidht', 'total_bajada', valores[8])
+		config.set('Bandwidht', 'total_upload', valores[7])
+		config.set('Bandwidht', 'total_download', valores[8])
 		config.set('Bandwidht', 'low_ceil', valores[9])
 		config.set('Bandwidht', 'medium_ceil', valores[10])
 		config.set('Bandwidht', 'high_ceil', valores[11])
 		config.set('Bandwidht', 'full_ceil', valores[12])
-		config.set('Bandwidht', 'porcentaje_rate', valores[13])
-		config.set('Bandwidht', 'puertos_priorizados', valores[14])
+		config.set('Bandwidht', 'rate_percentage', valores[13])
+		config.set('Bandwidht', 'priorized_ports', valores[14])
 		if boton == 'ok':
 			configfile = open(self.archivo, 'wb') 
 			config.write(configfile)
