@@ -5,7 +5,9 @@
 import commands
 import gettext
 import os
+import logging
 import ConfigParser
+
 import form.configuration as conf
 import form.menu as menu
 import form.workstation as works
@@ -26,6 +28,14 @@ except ImportError:
 	raise ImportError, gettext.gettext('SQLObject library not installed')
 
 __connection__ = 'sqlite:///etc/qqi/qqi.db'
+file_log = '/etc/qqi/qqi.log'
+
+logging.basicConfig(level=logging.INFO,
+					format='%(asctime)s %(levelname)-8s %(message)s',
+					datefmt='%a, %d %b %Y %H:%M:%S',
+					filename=file_log)
+
+logger = logging.getLogger(file_log)
 
 
 # Definicion de los puestos de trabajo
@@ -102,6 +112,7 @@ def reset():
 def menu_principal():
 	""" Funcion de menu principal """
 	salir = False
+	logger.info(gettext.gettext('Init aplication QQi'))
 	while not salir:
 		firstMenu = menu.Menu(gettext.gettext('QQinternet'),
 					columnas - 40, lineas - 24,
@@ -250,7 +261,8 @@ def menu_principal():
 				print gettext.gettext("Invalid Options")
 		elif opcion == 5:
 			config = conf.Configuracion(principal,
-					'/home/dmaldonado/Proyectos/QQi/qqi.cnf')
+					'/home/dmaldonado/Proyectos/QQi/qqi.cnf', 
+					'/etc/qqi/qqi.log')
 			config.configurar()
 		elif opcion == 6:
 			salida = os.system('tar cvfz /var/backups/qqi-0.1.tar.gz ' +
@@ -266,6 +278,7 @@ def menu_principal():
 		elif opcion == 8:
 			deshabilitar()
 		elif opcion == 9:
+			logger.info(gettext.gettext('Close QQi'))
 			principal.finish()
 			salir = True
 

@@ -2,10 +2,11 @@ from snack import *
 import gettext
 import os
 import ConfigParser
+import logging
 
 class Configuracion():
 	""" Clase para la configuracion de los parametros basicos del sistem """
-	def __init__(self, pantalla, archivo):
+	def __init__(self, pantalla, archivo, filelog):
 		if not archivo:
 			#self.archivo = "parametros.conf"
 			self.archivo = "qqi.cnf"
@@ -15,6 +16,7 @@ class Configuracion():
 			pantalla = snack.SnackScreen()
 		else:
 			self.pantalla = pantalla
+		self.logger = logging.getLogger(filelog)
 
 	def modificar(self):
 		""" Funcion para modificacion de parametros de configuracion"""
@@ -73,6 +75,7 @@ class Configuracion():
 		config.set('Bandwidht', 'rate_percentage', valores[13])
 		config.set('Bandwidht', 'priorized_ports', valores[14])
 		if boton == 'ok':
+			self.logger.info(gettext.gettext('Save the new configuration'))
 			configfile = open(self.archivo, 'wb')
 			config.write(configfile)
 
@@ -116,6 +119,7 @@ class Configuracion():
 		config.set('Bandwidht', 'rate_percentage', valores[13])
 		config.set('Bandwidht', 'priorized_ports', valores[14])
 		if boton == 'ok':
+			self.logger.info(gettext.gettext('Create the new configuration'))
 			configfile = open(self.archivo, 'wb') 
 			config.write(configfile)
 

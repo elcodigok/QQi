@@ -1,22 +1,19 @@
 [Lan]
 iface_lan = eth1
-external_ip = 192.168.0.60
-admin_ip = 192.168.0.2
-iface_wan = eth0
 internal_network = 10.39.65.0/24
-red_externa = 192.168.0.0/24
-external_network = 192.168.0.0/24
-ip_interno = 10.39.65.1
+external_ip = 192.168.0.60
 internal_ip = 10.39.65.1
+iface_wan = eth0
+external_network = 192.168.0.0/24
+admin_ip = 192.168.0.2
 
 [Bandwidht]
-medium_ceil = 256
+priorized_ports = 22,23,443,1863,3389,5223
 low_ceil = 128
-total_upload = 2048
-high_ceil = 384
 total_download = 2048
 rate_percentage = 80
-puertos_priorizados = 22,23,80,443,1863,3389,5223
-priorized_ports = 22,23,443,1863,3389,5223
+high_ceil = 384
+medium_ceil = 256
 full_ceil = 512
+total_upload = 2048
 
