@@ -1,11 +1,11 @@
 [Lan]
 iface_lan = eth1
-internal_network = 10.39.65.0/24
+internal_network = 123.123.122.0/23
 external_ip = 192.168.0.60
 internal_ip = 10.39.65.1
 iface_wan = eth0
 external_network = 192.168.0.0/24
-admin_ip = 192.168.0.2
+admin_ip = 123.123.123.204
 
 [Bandwidht]
 priorized_ports = 22,23,443,1863,3389,5223

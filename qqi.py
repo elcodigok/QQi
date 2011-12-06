@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-""" Sistema de control de acceso wifi """
 # -*- coding: utf-8 -*-
 
 import commands
@@ -19,12 +18,12 @@ import form.service as services
 try:
     import snack
 except ImportError:
-    raise ImportError, gettext.gettext('newt library not installed')
+    print gettext.gettext('newt library not installed')
 
 try:
     import sqlobject as sql
 except ImportError:
-    raise ImportError, gettext.gettext('SQLObject library not installed')
+    print gettext.gettext('SQLObject library not installed')
 
 __connection__ = 'sqlite:///etc/qqi/qqi.db'
 file_log = '/etc/qqi/qqi.log'

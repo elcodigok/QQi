@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -e
+
+IPTABLES="/sbin/iptables"
+TC="/sbin/tc"
+
+function policy_accept()
+{
+	$IPTABLES -t filter -P INPUT ACCEPT
+	$IPTABLES -t filter -P OUTPUT ACCEPT
+	$IPTABLES -t filter -P FORWARD ACCEPT
+
+	$IPTABLES -t nat -P PREROUTING ACCEPT
+	$IPTABLES -t nat -P POSTROUTING ACCEPT
+	$IPTABLES -t nat -P OUTPUT ACCEPT
+
+	$IPTABLES -t mangle -P PREROUTING ACCEPT
+	$IPTABLES -t mangle -P POSTROUTING ACCEPT
+	$IPTABLES -t mangle -P INPUT ACCEPT
+	$IPTABLES -t mangle -P OUTPUT ACCEPT
+	$IPTABLES -t mangle -P FORWARD ACCEPT
+
+	$IPTABLES -t filter -F
+	$IPTABLES -t filter -X
+	$IPTABLES -t filter -Z
+
+	$IPTABLES -t nat -F
+	$IPTABLES -t nat -X
+	$IPTABLES -t nat -Z
+
+	$IPTABLES -t mangle -F
+	$IPTABLES -t mangle -X
+	$IPTABLES -t mangle -Z
+}
+
+case $1 in
+	start)
+		policy_accept
+	;;
+	restart)
+	;;
+	stop)
+		policy_accept
+	;;
+	*)
+	echo "Error: usage start|restart|stop"
+esac
+exit 0
