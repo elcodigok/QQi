@@ -146,25 +146,25 @@ def rule_tc(id_clase, ceil, numip, puertos=''):
           str(id_clase + 7004) + " fw classid 1:" +
           str(id_clase + 7004))
     # Reglas mangle de bajada
-    os.system("iptables -t mangle -N download-" + numip)
-    os.system("iptables -t mangle -A download -d " + numip + " -j download-" +
+    os.system("iptables -t mangle -N DOWNLOAD-" + numip)
+    os.system("iptables -t mangle -A DOWNLOAD -d " + numip + " -j DOWNLOAD-" +
               numip)
-    os.system("iptables -t mangle -A download-" + numip +
+    os.system("iptables -t mangle -A DOWNLOAD-" + numip +
           " -m mark --mark 0 -m length --length 0:100 -j MARK --set-mark " +
           str(id_clase + 7003))
-    os.system("iptables -t mangle -A download-" + numip +
+    os.system("iptables -t mangle -A DOWNLOAD-" + numip +
           " -m mark --mark 0 -p udp -j MARK --set-mark " + str(id_clase + 7003))
-    os.system("iptables -t mangle -A download-" + numip +
+    os.system("iptables -t mangle -A DOWNLOAD-" + numip +
           " -m mark --mark 0 -p icmp -j MARK --set-mark " + str(id_clase + 7003))
-    os.system("iptables -t mangle -A download-" + numip +
+    os.system("iptables -t mangle -A DOWNLOAD-" + numip +
           " -m mark --mark 0 -p tcp -m multiport --sports " +
           puertos + " -j MARK --set-mark " + str(id_clase + 7003))
-    os.system("iptables -t mangle -A download-" + numip +
+    os.system("iptables -t mangle -A DOWNLOAD-" + numip +
           " -m mark --mark 0 -m helper --helper ftp -j MARK --set-mark " +
           str(id_clase + 7003))
-    os.system("iptables -t mangle -A download-" + numip +
+    os.system("iptables -t mangle -A DOWNLOAD-" + numip +
           " -m mark --mark 0 -j MARK --set-mark " + str(id_clase + 7004))
-    os.system("iptables -t mangle -A download-" + numip + " -j ACCEPT")
+    os.system("iptables -t mangle -A DOWNLOAD-" + numip + " -j ACCEPT")
     # Reglas de control de ancho de banda para subida
     os.system("tc class add dev " + iface_wan +
           " parent 1:7001 classid 1:" + str(id_clase + 7005) +
@@ -197,25 +197,25 @@ def rule_tc(id_clase, ceil, numip, puertos=''):
           str(id_clase + 7007) + " fw classid 1:" +
           str(id_clase + 7007))
     # Reglas mangle de subida
-    os.system("iptables -t mangle -N upload-" + numip)
-    os.system("iptables -t mangle -A upload -s " + numip +
-          " -j upload-" + numip)
-    os.system("iptables -t mangle -A upload-" + numip +
+    os.system("iptables -t mangle -N UPLOAD-" + numip)
+    os.system("iptables -t mangle -A UPLOAD -s " + numip +
+          " -j UPLOAD-" + numip)
+    os.system("iptables -t mangle -A UPLOAD-" + numip +
           " -m mark --mark 0 -m length --length 0:100 -j MARK --set-mark " +
           str(id_clase + 7006))
-    os.system("iptables -t mangle -A upload-" + numip +
+    os.system("iptables -t mangle -A UPLOAD-" + numip +
           " -m mark --mark 0 -p udp -j MARK --set-mark " + str(id_clase + 7006))
-    os.system("iptables -t mangle -A upload-" + numip +
+    os.system("iptables -t mangle -A UPLOAD-" + numip +
           " -m mark --mark 0 -p icmp -j MARK --set-mark " + str(id_clase + 7006))
-    os.system("iptables -t mangle -A upload-" + numip +
+    os.system("iptables -t mangle -A UPLOAD-" + numip +
           " -m mark --mark 0 -p tcp -m multiport --dports " + puertos +
           " -j MARK --set-mark " + str(id_clase + 7006))
-    os.system("iptables -t mangle -A upload-" + numip +
+    os.system("iptables -t mangle -A UPLOAD-" + numip +
           " -m mark --mark 0 -m helper --helper ftp -j MARK --set-mark " +
           str(id_clase + 7006))
-    os.system("iptables -t mangle -A upload-" + numip +
+    os.system("iptables -t mangle -A UPLOAD-" + numip +
           " -m mark --mark 0 -j MARK --set-mark " + str(id_clase + 7007))
-    os.system("iptables -t mangle -A upload-" + numip + " -j ACCEPT")
+    os.system("iptables -t mangle -A UPLOAD-" + numip + " -j ACCEPT")
 
 
 def configuration_tc():
