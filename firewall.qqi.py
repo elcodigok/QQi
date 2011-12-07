@@ -1,18 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import commands
 import gettext
 import os
 import logging
 import ConfigParser
-import form.configuration as conf
-import form.menu as menu
-import form.workstation as works
-import form.user as users
-import form.group as groups
-import form.url as urls
-import form.service as services
+
 
 try:
     import sqlobject as sql
@@ -38,13 +31,13 @@ external_ip = config.get('Lan', 'external_ip')
 iface_lan = config.get('Lan', 'iface_lan')
 iface_wan = config.get('Lan', 'iface_wan')
 admin_ip = config.get('Lan', 'admin_ip')
-total_upload = config.get('Bandwidht', 'total_upload')
-total_download = config.get('Bandwidht', 'total_download')
-low_ceil = config.get('Bandwidht', 'low_ceil')
-medium_ceil = config.get('Bandwidht', 'medium_ceil')
-high_ceil = config.get('Bandwidht', 'high_ceil')
-full_ceil = config.get('Bandwidht', 'full_ceil')
-rate_percentage = config.get('Bandwidht', 'rate_percentage')
+total_upload = int(config.get('Bandwidht', 'total_upload'))
+total_download = int(config.get('Bandwidht', 'total_download'))
+low_ceil = int(config.get('Bandwidht', 'low_ceil'))
+medium_ceil = int(config.get('Bandwidht', 'medium_ceil'))
+high_ceil = int(config.get('Bandwidht', 'high_ceil'))
+full_ceil = int(config.get('Bandwidht', 'full_ceil'))
+rate_percentage = int(config.get('Bandwidht', 'rate_percentage'))
 priorized_ports = config.get('Bandwidht', 'priorized_ports')
 
 
@@ -119,6 +112,133 @@ def reset():
     Servicio.createTable()
 
 
+def rule_tc(id_clase, ceil, numip, puertos=''):
+    """ Funcion de creacion de regla para TC """
+    # Reglas de control de ancho de banda bajada
+    os.system("tc class add dev " + iface_lan +
+          " parent 1:7000 classid 1:" + str(id_clase + 7002) +
+          " htb rate " + str(ceil * rate_percentage / 100) +
+          "kbit ceil " + str(ceil) + "kbit burst 24k quantum 1500")
+    os.system("tc class add dev " + iface_lan +
+          " parent 1:" + str(id_clase + 7002) + " classid 1:" +
+          str(id_clase + 7003) + " htb rate " +
+          str(ceil * 90 / 100) + "kbit ceil " +
+          str(ceil) +
+          "kbit burst 24k prio 1 quantum 1500")
+    os.system("tc qdisc add dev " + iface_lan + " parent 1:" +
+          str(id_clase + 7003) + " handle " + str(id_clase + 7003) +
+          " sfq perturb 10")
+    os.system("tc filter add dev " + iface_lan +
+          " parent 1:0 protocol ip prio 200 handle " +
+          str(id_clase + 7003) + " fw classid 1:" +
+          str(id_clase + 7003))
+    os.system("tc class add dev " + iface_lan +
+          " parent 1:" + str(id_clase + 7002) + " classid 1:" +
+          str(id_clase + 7004) + " htb rate " +
+          str(ceil * rate_percentage / 100) + "kbit ceil " +
+          str(ceil * rate_percentage / 100) +
+          "kbit burst 12k prio 3 quantum 1500")
+    os.system("tc qdisc add dev " + iface_lan + " parent 1:" +
+          str(id_clase + 7004) + " handle " + str(id_clase + 7004) +
+          " sfq perturb 10")
+    os.system("tc filter add dev " + iface_lan +
+          " parent 1:0 protocol ip prio 200 handle " +
+          str(id_clase + 7004) + " fw classid 1:" +
+          str(id_clase + 7004))
+    # Reglas mangle de bajada
+    os.system("iptables -t mangle -N download-" + numip)
+    os.system("iptables -t mangle -A download -d " + numip + " -j download-" +
+              numip)
+    os.system("iptables -t mangle -A download-" + numip +
+          " -m mark --mark 0 -m length --length 0:100 -j MARK --set-mark " +
+          str(id_clase + 7003))
+    os.system("iptables -t mangle -A download-" + numip +
+          " -m mark --mark 0 -p udp -j MARK --set-mark " + str(id_clase + 7003))
+    os.system("iptables -t mangle -A download-" + numip +
+          " -m mark --mark 0 -p icmp -j MARK --set-mark " + str(id_clase + 7003))
+    os.system("iptables -t mangle -A download-" + numip +
+          " -m mark --mark 0 -p tcp -m multiport --sports " +
+          puertos + " -j MARK --set-mark " + str(id_clase + 7003))
+    os.system("iptables -t mangle -A download-" + numip +
+          " -m mark --mark 0 -m helper --helper ftp -j MARK --set-mark " +
+          str(id_clase + 7003))
+    os.system("iptables -t mangle -A download-" + numip +
+          " -m mark --mark 0 -j MARK --set-mark " + str(id_clase + 7004))
+    os.system("iptables -t mangle -A download-" + numip + " -j ACCEPT")
+    # Reglas de control de ancho de banda para subida
+    os.system("tc class add dev " + iface_wan +
+          " parent 1:7001 classid 1:" + str(id_clase + 7005) +
+          " htb rate " + str(ceil * rate_percentage / 100) +
+          "kbit ceil " + str(ceil) + "kbit burst 24k quantum 1500")
+    os.system("tc class add dev " + iface_wan +
+          " parent 1:" + str(id_clase + 7005) + " classid 1:" +
+          str(id_clase + 7006) + " htb rate " +
+          str(ceil * 90 / 100) + "kbit ceil " +
+          str(ceil) +
+          "kbit burst 24k prio 1 quantum 1500")
+    os.system("tc qdisc add dev " + iface_wan + " parent 1:" +
+          str(id_clase + 7006) + " handle " + str(id_clase + 7006) +
+          " sfq perturb 10")
+    os.system("tc filter add dev " + iface_wan +
+          " parent 1:0 protocol ip prio 200 handle " +
+          str(id_clase + 7006) + " fw classid 1:" +
+          str(id_clase + 7006))
+    os.system("tc class add dev " + iface_wan +
+          " parent 1:" + str(id_clase + 7005) + " classid 1:" +
+          str(id_clase + 7007) + " htb rate " +
+          str(ceil * rate_percentage / 100) + "kbit ceil " +
+          str(ceil * rate_percentage * 2 / 100) +
+          "kbit burst 12k prio 3 quantum 1500")
+    os.system("tc qdisc add dev " + iface_wan + " parent 1:" +
+          str(id_clase + 7007) + " handle " + str(id_clase + 7007) +
+          " sfq perturb 10")
+    os.system("tc filter add dev " + iface_wan +
+          " parent 1:0 protocol ip prio 200 handle " +
+          str(id_clase + 7007) + " fw classid 1:" +
+          str(id_clase + 7007))
+    # Reglas mangle de subida
+    os.system("iptables -t mangle -N upload-" + numip)
+    os.system("iptables -t mangle -A upload -s " + numip +
+          " -j upload-" + numip)
+    os.system("iptables -t mangle -A upload-" + numip +
+          " -m mark --mark 0 -m length --length 0:100 -j MARK --set-mark " +
+          str(id_clase + 7006))
+    os.system("iptables -t mangle -A upload-" + numip +
+          " -m mark --mark 0 -p udp -j MARK --set-mark " + str(id_clase + 7006))
+    os.system("iptables -t mangle -A upload-" + numip +
+          " -m mark --mark 0 -p icmp -j MARK --set-mark " + str(id_clase + 7006))
+    os.system("iptables -t mangle -A upload-" + numip +
+          " -m mark --mark 0 -p tcp -m multiport --dports " + puertos +
+          " -j MARK --set-mark " + str(id_clase + 7006))
+    os.system("iptables -t mangle -A upload-" + numip +
+          " -m mark --mark 0 -m helper --helper ftp -j MARK --set-mark " +
+          str(id_clase + 7006))
+    os.system("iptables -t mangle -A upload-" + numip +
+          " -m mark --mark 0 -j MARK --set-mark " + str(id_clase + 7007))
+    os.system("iptables -t mangle -A upload-" + numip + " -j ACCEPT")
+
+
+def configuration_tc():
+    os.system("tc qdisc del dev " + iface_lan + " root")
+    os.system("tc qdisc add dev " + iface_lan + " root handle 1 htb default" +
+                " 0 r2q 10")
+    os.system("tc qdisc del dev " + iface_wan + " root")
+    os.system("tc qdisc add dev " + iface_wan + " root handle 1 htb default" +
+                " 0 r2q 10")
+    os.system("tc class add dev " + iface_lan +
+                " parent 1: classid 1:7000 htb rate " + str(total_download) +
+                "kbit ceil " + str(total_download) + "kbit burst 12k" +
+                " quantum 25907")
+    os.system("tc class add dev " + iface_wan +
+                " parent 1: classid 1:7000 htb rate " + str(total_download) +
+                "kbit ceil " + str(total_download) + "kbit burst 12k" +
+                " quantum 25907")
+    id_clase = 0
+    for workstation in Puesto.select():
+        rule_tc(id_clase, full_ceil, workstation.ip, priorized_ports)
+        id_clase += 6
+
+
 def configuration_firewall():
     os.system("echo 1 > /proc/sys/net/ipv4/ip_forward")
     os.system("iptables -t filter -P INPUT DROP")
@@ -141,12 +261,12 @@ def configuration_firewall():
     os.system("iptables -t filter -A INPUT -m tcp -p tcp --dport 53 -j ACCEPT")
     os.system("iptables -t filter -A INPUT -i " + iface_lan +
                 " -p udp --sport 67:68 -j ACCEPT")
-#    os.system("iptables -t mangle -N DOWNLOAD")
-#    os.system("iptables -t mangle -A FORWARD -o " + iface_lan +
-#                " -j DOWNLOAD")
-#    os.system("iptables -t mangle -N UPLOAD")
-#    os.system("iptables -t mangle -A FORWARD -o " + iface_wan +
-#                " -j UPLOAD")
+    os.system("iptables -t mangle -N DOWNLOAD")
+    os.system("iptables -t mangle -A FORWARD -o " + iface_lan +
+                " -j DOWNLOAD")
+    os.system("iptables -t mangle -N UPLOAD")
+    os.system("iptables -t mangle -A FORWARD -o " + iface_wan +
+                " -j UPLOAD")
     for workstation in Puesto.select():
         if (workstation.politica):
             os.system("iptables -t filter -A FORWARD -s " + workstation.ip +
@@ -170,3 +290,4 @@ def configuration_firewall():
                         " -m tcp -p tcp -m multiport --dports 80,443 -j ACCEPT")
 
 configuration_firewall()
+configuration_tc()

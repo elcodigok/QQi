@@ -32,6 +32,9 @@ function policy_accept()
 	$IPTABLES -t mangle -F
 	$IPTABLES -t mangle -X
 	$IPTABLES -t mangle -Z
+
+	$TC qdisc del dev eth0 root
+	$TC qdisc del dev eth1 root
 }
 
 case $1 in

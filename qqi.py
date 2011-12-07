@@ -287,7 +287,7 @@ if __name__ == '__main__':
     (l, c) = str.split(commands.getoutput('stty size'))
     (lineas, columnas) = (int(l), int(c))
     lineas, comlumnas = lineas or 24, columnas or 79
-    nombre = 'QQinternet'
+    nombre = 'QQi'
     version = '0.1'
     principal = snack.SnackScreen()
     #reset()

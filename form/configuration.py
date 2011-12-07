@@ -20,7 +20,6 @@ class Configuracion():
         self.logger = logging.getLogger(filelog)
 
     def modificar(self):
-        """ Funcion para modificacion de parametros de configuracion"""
         config = ConfigParser.RawConfigParser()
         config.read(self.archivo)
         internal_network = config.get('Lan', 'internal_network')
@@ -39,23 +38,24 @@ class Configuracion():
         rate_percentage = config.get('Bandwidht', 'rate_percentage')
         priorized_ports = config.get('Bandwidht', 'priorized_ports')
         (boton, valores) = EntryWindow(self.pantalla,
-                            gettext.gettext("Configuration"),
-                            gettext.gettext("Input here the basic parameter for the system"),
-                            [(gettext.gettext('Internal network:'), internal_network),
-                            (gettext.gettext('External network:'), external_network),
-                            (gettext.gettext('Internal IP:'), internal_ip),
-                            (gettext.gettext('External IP:'), external_ip),
-                            (gettext.gettext('Internal interface:'), iface_lan),
-                            (gettext.gettext('External interface:'), iface_wan),
-                            (gettext.gettext('Administrative IP:'), admin_ip),
-                            (gettext.gettext('Upload bandwidht:'), total_upload),
-                            (gettext.gettext('Download bandwidht:'), total_download),
-                            (gettext.gettext('Ceil for low class:'), low_ceil),
-                            (gettext.gettext('Ceil for medium class:'), medium_ceil),
-                            (gettext.gettext('Ceil for high class:'), high_ceil),
-                            (gettext.gettext('Ceil for full class:'), full_ceil),
-                            (gettext.gettext('Rate pecent guaranty:'), rate_percentage),
-                            (gettext.gettext('Priorized ports:'), priorized_ports)])
+                    gettext.gettext("Configuration"),
+                    gettext.gettext("Input here the basic parameter" +
+                                    " for the system"),
+                    [(gettext.gettext('Internal network:'), internal_network),
+                    (gettext.gettext('External network:'), external_network),
+                    (gettext.gettext('Internal IP:'), internal_ip),
+                    (gettext.gettext('External IP:'), external_ip),
+                    (gettext.gettext('Internal interface:'), iface_lan),
+                    (gettext.gettext('External interface:'), iface_wan),
+                    (gettext.gettext('Administrative IP:'), admin_ip),
+                    (gettext.gettext('Upload bandwidht:'), total_upload),
+                    (gettext.gettext('Download bandwidht:'), total_download),
+                    (gettext.gettext('Ceil for low class:'), low_ceil),
+                    (gettext.gettext('Ceil for medium class:'), medium_ceil),
+                    (gettext.gettext('Ceil for high class:'), high_ceil),
+                    (gettext.gettext('Ceil for full class:'), full_ceil),
+                    (gettext.gettext('Rate pecent guaranty:'), rate_percentage),
+                    (gettext.gettext('Priorized ports:'), priorized_ports)])
         config = ConfigParser.RawConfigParser()
         config.add_section('Lan')
         config.set('Lan', 'internal_network', valores[0])
@@ -79,27 +79,27 @@ class Configuracion():
             configfile = open(self.archivo, 'wb')
             config.write(configfile)
 
-
     def crear(self):
         """ Funcion para creacion de Configuracion de parametros """
         (boton, valores) = snack.EntryWindow(self.pantalla,
-                            gettext.gettext("Configuration"),
-                            gettext.gettext("Input here the basic parameter for the system"),
-                            [gettext.Catalog('Internal network:'),
-                            gettext.Catalog('External network:'),
-                            gettext.Catalog('Internal IP:'),
-                            gettext.Catalog('External IP:'),
-                            gettext.Catalog('Internal interface:'),
-                            gettext.Catalog('External interface:'),
-                            gettext.Catalog('Administrative IP:'),
-                            gettext.Catalog('Upload bandwidht:'),
-                            gettext.Catalog('Download bandwidht:'),
-                            gettext.Catalog('Ceil for low class:'),
-                            gettext.Catalog('Ceil for medium class:'),
-                            gettext.Catalog('Ceil for high class:'),
-                            gettext.Catalog('Ceil for full class:'),
-                            gettext.Catalog('Rate pecent guaranty:'),
-                            gettext.Catalog('Priorized ports:')])
+                        gettext.gettext("Configuration"),
+                        gettext.gettext("Input here the basic parameter for" +
+                                        " the system"),
+                        [gettext.Catalog('Internal network:'),
+                        gettext.Catalog('External network:'),
+                        gettext.Catalog('Internal IP:'),
+                        gettext.Catalog('External IP:'),
+                        gettext.Catalog('Internal interface:'),
+                        gettext.Catalog('External interface:'),
+                        gettext.Catalog('Administrative IP:'),
+                        gettext.Catalog('Upload bandwidht:'),
+                        gettext.Catalog('Download bandwidht:'),
+                        gettext.Catalog('Ceil for low class:'),
+                        gettext.Catalog('Ceil for medium class:'),
+                        gettext.Catalog('Ceil for high class:'),
+                        gettext.Catalog('Ceil for full class:'),
+                        gettext.Catalog('Rate pecent guaranty:'),
+                        gettext.Catalog('Priorized ports:')])
         config = ConfigParser.RawConfigParser()
         config.add_section('Lan')
         config.set('Lan', 'internal_network', valores[0])
