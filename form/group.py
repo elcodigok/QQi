@@ -11,10 +11,12 @@ class GroupAdmin:
         self.screen = screen
         self.cadena = ""
 
-    def showList(self, query):
+    def showList(self, query, optionSelect=False):
+        self.optionSelect = optionSelect
         self.query = query
         self.listElement = Listbox(height=15, width=77, returnExit=1)
-        self.buttons = ButtonBar(self.screen, ((gettext.gettext("Add"), "add"),
+        self.buttons = ButtonBar(self.screen, (
+                                    (gettext.gettext("Add"), "add"),
                                     (gettext.gettext("Modify"), "modify"),
                                     (gettext.gettext("Delete"), "delete"),
                                     (gettext.gettext("Return"), "return")))

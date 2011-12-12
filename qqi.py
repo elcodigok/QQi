@@ -155,8 +155,10 @@ def menu_principal():
                                         principal,
                                         Puesto,
                                         record)
-            else:
-                print gettext.gettext("Invalid Options")
+            elif (listOption[0] == "group"):
+                record = listOption[1]
+                workstatioList = works.WorkstationAdmin(principal)
+                workstationGroup = workstationList.listWorkstationGroup(record)
         elif opcion == 1:
             userQuery = Usuario.select()
             userList = users.UserAdmin(principal)

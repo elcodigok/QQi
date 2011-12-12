@@ -10,6 +10,8 @@ SOFTWARE REQUIREMENTS:
   - python-newt
   - python-sqlobject
   - Squid3
+  - iptables
+  - Ninja-IDE
 
 INSTALLATION:
 

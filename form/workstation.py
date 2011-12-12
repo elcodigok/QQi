@@ -14,7 +14,9 @@ class WorkstationAdmin:
     def showList(self, query):
         self.query = query
         self.listElement = Listbox(height=15, width=77, returnExit=1)
-        self.buttons = ButtonBar(self.screen, ((gettext.gettext("Add"), "add"),
+        self.buttons = ButtonBar(self.screen, (
+                                        (gettext.gettext("Group"), "group"),
+                                        (gettext.gettext("Add"), "add"),
                                         (gettext.gettext("Modify"), "modify"),
                                         (gettext.gettext("Delete"), "delete"),
                                         (gettext.gettext("Return"), "return")))
@@ -29,6 +31,26 @@ class WorkstationAdmin:
         self.grid.add(self.buttons, 0, 1, growx=1)
         rta = self.grid.runOnce()
         return (self.buttons.buttonPressed(rta), self.listElement.current())
+
+    def listWorkstationGroup(self, id_workstation):
+        record = id_workstation.grupos
+        list = Listbox(height=10, width=47, returnExit=1)
+        buttons = ButtonBar(self.screen, (
+                    (gettext.gettext("Add"), "add"),
+                    (gettext.gettext("Delete"), "delete"),
+                    (gettext.gettext("Back"), "back")))
+        for r in record:
+            list.append(r.nombre, r)
+        g = GridForm(self.screen, gettext.gettext("Groups List"), 1, 2)
+        g.add(list, 0, 0)
+        g.add(buttons, 0, 1, growx=1)
+        rta = g.runOnce()
+        options = buttons.buttonPressed(rta)
+        if (options == "add"):
+            print "****************************************************"
+        elif (options == "delete"):
+            id_workstation.removeGrupo(list.current().id)
+
 
     def ntEntryWindow(self, screen, title, text, prompts, allowCancel=1,
                         width=40, entryWidth=20,
