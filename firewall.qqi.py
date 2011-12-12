@@ -13,14 +13,6 @@ except ImportError:
     print gettext.gettext('SQLObject library not installed')
 
 __connection__ = 'sqlite:///etc/qqi/qqi.db'
-file_log = '/etc/qqi/qqi.log'
-
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(levelname)-8s %(message)s',
-                    datefmt='%a, %d %b %Y %H:%M:%S',
-                    filename=file_log)
-
-logger = logging.getLogger(file_log)
 
 config = ConfigParser.RawConfigParser()
 config.read('/home/dmaldonado/Proyectos/QQi/qqi.cnf')
@@ -39,6 +31,14 @@ high_ceil = int(config.get('Bandwidht', 'high_ceil'))
 full_ceil = int(config.get('Bandwidht', 'full_ceil'))
 rate_percentage = int(config.get('Bandwidht', 'rate_percentage'))
 priorized_ports = config.get('Bandwidht', 'priorized_ports')
+file_log = config.get('Configuration', 'log_file')
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)-8s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename=file_log)
+
+logger = logging.getLogger(file_log)
 
 
 # Definicion de los puestos de trabajo

@@ -26,7 +26,10 @@ except ImportError:
     print gettext.gettext('SQLObject library not installed')
 
 __connection__ = 'sqlite:///etc/qqi/qqi.db'
-file_log = '/etc/qqi/qqi.log'
+
+config = ConfigParser.RawConfigParser()
+config.read('/home/dmaldonado/Proyectos/QQi/qqi.cnf')
+file_log = config.get('Configuration', 'log_file')
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)-8s %(message)s',

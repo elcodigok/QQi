@@ -37,6 +37,7 @@ class Configuracion():
         full_ceil = config.get('Bandwidht', 'full_ceil')
         rate_percentage = config.get('Bandwidht', 'rate_percentage')
         priorized_ports = config.get('Bandwidht', 'priorized_ports')
+        log_file = config.get('Configuration', 'log_file')
         (boton, valores) = EntryWindow(self.pantalla,
                     gettext.gettext("Configuration"),
                     gettext.gettext("Input here the basic parameter" +
@@ -55,7 +56,8 @@ class Configuracion():
                     (gettext.gettext('Ceil for high class:'), high_ceil),
                     (gettext.gettext('Ceil for full class:'), full_ceil),
                     (gettext.gettext('Rate pecent guaranty:'), rate_percentage),
-                    (gettext.gettext('Priorized ports:'), priorized_ports)])
+                    (gettext.gettext('Priorized ports:'), priorized_ports),
+                    (gettext.gettext('Log File:'), log_file)])
         config = ConfigParser.RawConfigParser()
         config.add_section('Lan')
         config.set('Lan', 'internal_network', valores[0])
@@ -74,6 +76,8 @@ class Configuracion():
         config.set('Bandwidht', 'full_ceil', valores[12])
         config.set('Bandwidht', 'rate_percentage', valores[13])
         config.set('Bandwidht', 'priorized_ports', valores[14])
+        config.add_section('Configuration')
+        config.set('Configuration', 'log_file', valores[15])
         if boton == 'ok':
             self.logger.info(gettext.gettext('Save the new configuration'))
             configfile = open(self.archivo, 'wb')
@@ -99,7 +103,8 @@ class Configuracion():
                         gettext.Catalog('Ceil for high class:'),
                         gettext.Catalog('Ceil for full class:'),
                         gettext.Catalog('Rate pecent guaranty:'),
-                        gettext.Catalog('Priorized ports:')])
+                        gettext.Catalog('Priorized ports:'),
+                        gettext.Catalog('Log File:')])
         config = ConfigParser.RawConfigParser()
         config.add_section('Lan')
         config.set('Lan', 'internal_network', valores[0])
@@ -118,6 +123,7 @@ class Configuracion():
         config.set('Bandwidht', 'full_ceil', valores[12])
         config.set('Bandwidht', 'rate_percentage', valores[13])
         config.set('Bandwidht', 'priorized_ports', valores[14])
+        config.set('Configuration', 'log_file', valores[15])
         if boton == 'ok':
             self.logger.info(gettext.gettext('Create the new configuration'))
             configfile = open(self.archivo, 'wb')
