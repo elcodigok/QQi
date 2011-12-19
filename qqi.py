@@ -158,7 +158,9 @@ def menu_principal():
             elif (listOption[0] == "group"):
                 record = listOption[1]
                 workstatioList = works.WorkstationAdmin(principal)
-                workstationGroup = workstationList.listWorkstationGroup(record)
+                groupQuery = Grupo.select()
+                workstationGroup = workstationList.listWorkstationGroup(record,
+                                    groupQuery)
         elif opcion == 1:
             userQuery = Usuario.select()
             userList = users.UserAdmin(principal)

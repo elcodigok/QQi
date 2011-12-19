@@ -160,3 +160,25 @@ class GroupAdmin:
                                 gettext.gettext('Cancel')], 60)
         if (confirmation == 'ok'):
             self.table.delete(self.registro.id)
+
+    def selectList(self, query, optionSelect=False):
+        self.optionSelect = optionSelect
+        self.query = query
+        self.listElement = Listbox(height=15, width=77, returnExit=1)
+        self.buttons = ButtonBar(self.screen, (
+                                    (gettext.gettext("Select"), "select"),
+                                    (gettext.gettext("Return"), "return")))
+        if (self.query.count() > 0):
+            for record in self.query:
+                item = "%-20s %-15s %6s %-15s" % (record.nombre,
+                                                    record.descripcion,
+                                                    record.tipo,
+                                                    record.web)
+                self.listElement.append(item, record)
+        else:
+            self.listElement.append(gettext.gettext("There are no records"), 0)
+        self.grid = GridForm(self.screen, gettext.gettext('Group List'), 1, 2)
+        self.grid.add(self.listElement, 0, 0)
+        self.grid.add(self.buttons, 0, 1, growx=1)
+        rta = self.grid.runOnce()
+        return (self.buttons.buttonPressed(rta), self.listElement.current())

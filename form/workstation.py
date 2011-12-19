@@ -3,6 +3,7 @@ import gettext
 #import os
 #import ConfigParser
 import sqlobject as sql
+import form.group as groups
 
 
 class WorkstationAdmin:
@@ -32,7 +33,8 @@ class WorkstationAdmin:
         rta = self.grid.runOnce()
         return (self.buttons.buttonPressed(rta), self.listElement.current())
 
-    def listWorkstationGroup(self, id_workstation):
+    def listWorkstationGroup(self, id_workstation, query):
+        self.queryGroup = query
         record = id_workstation.grupos
         list = Listbox(height=10, width=47, returnExit=1)
         buttons = ButtonBar(self.screen, (
@@ -47,7 +49,8 @@ class WorkstationAdmin:
         rta = g.runOnce()
         options = buttons.buttonPressed(rta)
         if (options == "add"):
-            print "****************************************************"
+            groupList = groups.GroupAdmin(self.screen)
+            listOptions = groupList.selectList(self.queryGroup)
         elif (options == "delete"):
             id_workstation.removeGrupo(list.current().id)
 
